@@ -15,6 +15,7 @@ class SideMenu extends StatefulWidget {
   final SideMenuController controller;
 
   final List items;
+  final List<SideMenuItem> bottomItems;
   final SideMenuItemList sidemenuitems = SideMenuItemList();
 
   final Global global = Global();
@@ -54,6 +55,7 @@ class SideMenu extends StatefulWidget {
   SideMenu({
     Key? key,
     required this.items,
+     this.bottomItems =const [],
     required this.controller,
     this.title,
     this.footer,
@@ -90,7 +92,8 @@ class SideMenu extends StatefulWidget {
           builder: data.builder,
           page:data.page,
         );
-      } else if (data is SideMenuExpansionItem) {
+      }
+      else if (data is SideMenuExpansionItem) {
         sideMenuExpansionItemIndex = sideMenuExpansionItemIndex + 1;
         return SideMenuExpansionItemWithGlobal(
           global: global,
@@ -119,6 +122,21 @@ class SideMenu extends StatefulWidget {
       }
     }).toList();
     global.items = sidemenuitems.items;
+    global.bottomItems = bottomItems.map((data) {
+      return SideMenuItemWithGlobal(
+        global: global,
+        title: data.title,
+        onTap: data.onTap,
+        icon: data.icon,
+        iconWidget: data.iconWidget,
+        badgeContent: data.badgeContent,
+        badgeColor: data.badgeColor,
+        tooltipContent: data.tooltipContent,
+        trailing: data.trailing,
+        builder: data.builder,
+        page:data.page,
+      );
+        }).toList();
   }
 
   @override
@@ -283,21 +301,28 @@ class _SideMenuState extends State<SideMenu> {
       decoration: _decoration(widget.style),
       child: Stack(
         children: [
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (widget.global.style.showHamburger) hamburgerIcon,
-                if (widget.global.style.displayMode ==
-                    SideMenuDisplayMode.compact &&
-                    showToggle)
-                  const SizedBox(
-                    height: 42,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (widget.global.style.showHamburger) hamburgerIcon,
+              if (widget.global.style.displayMode == SideMenuDisplayMode.compact && showToggle)
+                const SizedBox(
+                  height: 42,
+                ),
+              if (widget.title != null) widget.title!,
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: List<Widget>.from(widget.sidemenuitems.items),
                   ),
-                if (widget.title != null) widget.title!,
-                ...widget.sidemenuitems.items,
-              ],
-            ),
+                ),
+              ),
+              SingleChildScrollView(
+                child: Column(
+                  children: widget.global.bottomItems,
+                ),
+              ),
+            ],
           ),
           if ((widget.footer != null &&
               widget.global.displayModeState.value !=

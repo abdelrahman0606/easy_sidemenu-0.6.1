@@ -1,7 +1,6 @@
-import 'package:easy_sidemenu/src/side_menu_display_mode.dart';
-import 'package:easy_sidemenu/src/side_menu_style.dart';
-import 'package:easy_sidemenu/src/side_menu_controller.dart';
+import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/widgets.dart';
+import '../side_menu_item_with_global.dart';
 
 class Global {
   late SideMenuController controller;
@@ -11,6 +10,7 @@ class Global {
   bool showTrailing = true;
   List<Function> itemsUpdate = [];
   List items = [];
+  List<SideMenuItemWithGlobal> bottomItems = [];
   List<bool> expansionStateList = [];
 }
 
